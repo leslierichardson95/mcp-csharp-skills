@@ -267,6 +267,79 @@ az webapp config appsettings set \
 
 ---
 
+## 📢 Optional: Publish to MCP Registry
+
+After publishing to NuGet or Docker, you can optionally list your server in the **official MCP Registry** to make it discoverable by MCP clients worldwide.
+
+### Should You Publish to the Registry?
+
+| ✅ Publish if... | ❌ Skip if... |
+|------------------|---------------|
+| Your server is for public/community use | Your server is internal/private |
+| You want discoverability in MCP clients | You're still testing/developing |
+| You want to be listed at registry.modelcontextprotocol.io | You don't need public discovery |
+
+### Quick Start
+
+```bash
+# 1. Install the mcp-publisher CLI
+# macOS/Linux (Homebrew)
+brew install mcp-publisher
+
+# Or download binary from:
+# https://github.com/modelcontextprotocol/registry/releases
+
+# 2. Initialize server.json (if not already created)
+mcp-publisher init
+
+# 3. Authenticate with GitHub
+mcp-publisher login github
+
+# 4. Publish to the registry
+mcp-publisher publish
+
+# 5. Verify publication
+curl "https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.yourusername/yourserver"
+```
+
+### Requirements for NuGet Packages
+
+Before publishing to the MCP Registry, ensure:
+
+1. **Package is published to NuGet.org** (required first)
+
+2. **server.json is configured correctly**:
+```json
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.yourusername/mymcpserver",
+  "description": "Your server description",
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "nuget",
+      "identifier": "YourUsername.MyMcpServer",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/yourusername/mymcpserver",
+    "source": "github"
+  }
+}
+```
+
+3. **Server name uses correct namespace format**:
+   - With GitHub auth: `io.github.{your-github-username}/{server-name}`
+   - With DNS auth: `{your-domain}/{server-name}` (e.g., `com.mycompany/myserver`)
+
+**Load [📋 MCP Registry Guide](./reference/mcp_registry.md) for detailed instructions and CI/CD automation.**
+
+---
+
 ## 🔐 Security Considerations
 
 ### Secrets Management
@@ -350,8 +423,10 @@ curl https://mymcpserver.azurecontainerapps.io/health
 - [📋 NuGet Publishing Guide](./reference/nuget_publishing.md) - Complete NuGet packaging and publishing
 - [📋 Docker Deployment Guide](./reference/docker_deployment.md) - Docker containerization best practices
 - [📋 Azure Deployment Guide](./reference/azure_deployment.md) - Azure Container Apps and App Service
+- [📋 MCP Registry Guide](./reference/mcp_registry.md) - Publishing to the official MCP Registry
 
 ### External Documentation
 - **NuGet Publishing**: https://learn.microsoft.com/nuget/nuget-org/publish-a-package
 - **Azure Container Apps**: https://learn.microsoft.com/azure/container-apps/
 - **Docker Best Practices**: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
+- **MCP Registry**: https://registry.modelcontextprotocol.io
