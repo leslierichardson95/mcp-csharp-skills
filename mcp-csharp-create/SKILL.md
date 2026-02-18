@@ -25,13 +25,36 @@ Ensure you have the following installed:
 - **Visual Studio 2022+** or **Visual Studio Code** with C# Dev Kit
 - **GitHub Copilot** (optional, for Agent Mode testing)
 
-#### 1.2 Install the MCP Server Template
+#### 1.2 Install/Update the MCP Server Template
 
 ```bash
+# Installs if missing, updates if outdated (idempotent)
 dotnet new install Microsoft.McpServer.ProjectTemplates
 ```
 
-#### 1.3 Create a New MCP Server Project
+> **Note:** This command is safe to run anytime - it installs the template if missing, or updates to the latest version if already installed.
+
+#### 1.3 Choose Your Transport
+
+**⚠️ ASK THE USER:** Before proceeding, ask which transport type they need:
+
+> "Which transport type do you need for your MCP server?"
+> - **stdio** - Local/CLI integration, runs as subprocess (simpler, recommended for getting started)
+> - **HTTP** - Remote/web service, multiple clients, cloud deployment
+
+**Decision Guide:**
+
+| Choose **stdio** if... | Choose **HTTP** if... |
+|------------------------|----------------------|
+| Building a local CLI tool | Deploying as a cloud/web service |
+| Single user at a time | Multiple simultaneous clients |
+| Running as IDE subprocess | Cross-network access needed |
+| GitHub Copilot desktop/local | Containerized deployment (Docker) |
+| Simpler setup, no network config | Need server-to-client notifications |
+
+> **Default recommendation:** If the user is unsure, recommend **stdio** - it's simpler and works great for most local development scenarios. They can always create an HTTP version later.
+
+#### 1.4 Create a New MCP Server Project
 
 **For stdio transport (local/CLI integrations):**
 ```bash
